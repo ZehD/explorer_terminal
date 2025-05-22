@@ -1,5 +1,35 @@
 import os
 import shutil
+import sqlite3
+
+# Iniciar banco de dados simples para logs
+DATABASE_FILE = 'file_log.db'
+
+def create_table():
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS file_operations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            file_name TEXT NOT NULL,
+            operation_type TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            source_path TEXT,
+            dest_path TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def log_operation(file_name, operation_type, source_path=None, dest_path=None):
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO file_operations (file_name, operation_type, source_path, dest_path)
+        VALUES (?, ?, ?, ?)
+    ''', (file_name, operation_type, source_path, dest_path))
+    conn.commit()
+    conn.close()
 
 def list_directory(path):
     print(f"\nDiretório: {path}\n")
@@ -13,6 +43,7 @@ def list_directory(path):
     return items
 
 def main():
+    create_table() 
     current_path = os.getcwd()
     copy_mode = False
     copy_source = None
@@ -54,6 +85,8 @@ def main():
                 else:
                     shutil.copy2(copy_source, dest_path)
                     print(f"Arquivo '{copy_source_name}' copiado para o diretório atual.")
+                # função de copiar
+                log_operation(copy_source_name, 'copy', copy_source, dest_path)
                 copy_mode = False
                 copy_source = None
                 copy_source_name = None
@@ -73,6 +106,8 @@ def main():
                     else:
                         os.remove(selected_path)
                         print(f"Arquivo '{selected}' deletado.")
+                    # função de deletar
+                    log_operation(selected, 'delete', selected_path)
                 except Exception as e:
                     print(f"Erro ao deletar: {e}")
             else:
@@ -93,10 +128,10 @@ def main():
             selected_path = os.path.join(current_path, selected)
             if os.path.isdir(selected_path):
                 current_path = selected_path
-            elif not copy_mode:  # Only allow file viewing when not in copy mode
+            elif not copy_mode:  # verifica se não está no modo de cópia
                 try:
                     with open(selected_path, 'r', encoding='utf-8') as f:
-                        print(f"\n📄 Conteúdo de {selected}:\n")
+                        print(f"\n Conteúdo de {selected}:\n")
                         print(f.read())
                 except Exception as e:
                     print(f"Erro ao abrir arquivo: {e}")
