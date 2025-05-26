@@ -1,35 +1,6 @@
 import os
 import shutil
-import sqlite3
-
-# Iniciar banco de dados simples para logs
-DATABASE_FILE = 'file_log.db'
-
-def create_table():
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS file_operations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            file_name TEXT NOT NULL,
-            operation_type TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            source_path TEXT,
-            dest_path TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-def log_operation(file_name, operation_type, source_path=None, dest_path=None):
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO file_operations (file_name, operation_type, source_path, dest_path)
-        VALUES (?, ?, ?, ?)
-    ''', (file_name, operation_type, source_path, dest_path))
-    conn.commit()
-    conn.close()
+from file_logger import log_operation
 
 def list_directory(path):
     print(f"\nDiretório: {path}\n")
@@ -42,13 +13,13 @@ def list_directory(path):
             print(f"{idx}.       {item}")
     return items
 
-def main():
-    create_table() 
+def terminal_flow():
     current_path = os.getcwd()
     copy_mode = False
     copy_source = None
     copy_source_name = None
 
+    print("Bem-vindo ao Explorador de Arquivos do Terminal!")
     while True:
         items = list_directory(current_path)
 
@@ -81,11 +52,10 @@ def main():
                 dest_path = os.path.join(current_path, copy_source_name)
                 if os.path.isdir(copy_source):
                     shutil.copytree(copy_source, dest_path)
-                    print(f"Pasta '{copy_source_name}' copiada para o diretório atual.")
+                    print(f"Pasta '{copy_source_name}' copiada.")
                 else:
                     shutil.copy2(copy_source, dest_path)
-                    print(f"Arquivo '{copy_source_name}' copiado para o diretório atual.")
-                # função de copiar
+                    print(f"Arquivo '{copy_source_name}' copiado.")
                 log_operation(copy_source_name, 'copy', copy_source, dest_path)
                 copy_mode = False
                 copy_source = None
@@ -102,33 +72,30 @@ def main():
                 try:
                     if os.path.isdir(selected_path):
                         shutil.rmtree(selected_path)
-                        print(f"Pasta '{selected}' deletada.")
                     else:
                         os.remove(selected_path)
-                        print(f"Arquivo '{selected}' deletado.")
-                    # função de deletar
+                    print(f"'{selected}' deletado.")
                     log_operation(selected, 'delete', selected_path)
                 except Exception as e:
                     print(f"Erro ao deletar: {e}")
             else:
-                print("Índice inválido para deletar.")
+                print("Índice inválido.")
         elif choice.startswith("cp ") and not copy_mode:
             _, idx = choice.split(maxsplit=1)
             if idx.isdigit() and int(idx) < len(items):
                 selected = items[int(idx)]
-                selected_path = os.path.join(current_path, selected)
-                copy_source = selected_path
+                copy_source = os.path.join(current_path, selected)
                 copy_source_name = selected
                 copy_mode = True
-                print(f"Item '{selected}' selecionado para cópia. Navegue até o destino e digite 'paste'.")
+                print(f"Item '{selected}' pronto para cópia. Navegue até o destino e digite 'paste'.")
             else:
-                print("Índice inválido para copiar.")
+                print("Índice inválido.")
         elif choice.isdigit() and int(choice) < len(items):
             selected = items[int(choice)]
             selected_path = os.path.join(current_path, selected)
             if os.path.isdir(selected_path):
                 current_path = selected_path
-            elif not copy_mode:  # verifica se não está no modo de cópia
+            elif not copy_mode:
                 try:
                     with open(selected_path, 'r', encoding='utf-8') as f:
                         print(f"\n Conteúdo de {selected}:\n")
@@ -137,6 +104,3 @@ def main():
                     print(f"Erro ao abrir arquivo: {e}")
         else:
             print("Escolha inválida.")
-
-if __name__ == "__main__":
-    main()
