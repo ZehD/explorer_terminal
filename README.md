@@ -1,29 +1,47 @@
 # explorer_terminal
 
-Um script Python simples para navegar em pastas diretamente pelo terminal.
+Um explorador de arquivos simples em Python, com opções de uso via terminal ou interface gráfica (GUI).
 
-## Descrição
+## 📦 Descrição
 
-Este projeto oferece uma maneira fácil e rápida de explorar diretórios, visualizar arquivos e gerenciar operações básicas como cópia e exclusão, tudo usando comandos simples no terminal. Ideal para quem quer navegar pela estrutura de pastas sem sair do console.
+Este projeto oferece uma maneira prática de navegar por diretórios, visualizar arquivos de texto e realizar operações básicas como cópia, exclusão e renomeação. Você pode escolher entre utilizar a versão **terminal**, com comandos simples, ou a versão **gráfica (GUI)**, construída com Tkinter.
 
-## Funcionalidades
+Ideal para quem deseja uma ferramenta leve de exploração de arquivos, com registro de operações em banco de dados.
 
+## ✨ Funcionalidades
+
+### Terminal (`explorer_terminal.py`)
 - Listar conteúdo de diretórios
 - Navegar entre pastas (`cd`)
-- Exibir o caminho atual
-- Visualizar o conteúdo de arquivos de texto
+- Visualizar conteúdo de arquivos de texto
 - Excluir arquivos e pastas
-- Copiar arquivos e pastas para outro local, com navegação até o destino antes de colar
-- Registrar em um banco de dados SQLite todas as operações de cópia e exclusão realizadas
+- Copiar arquivos e pastas com opção de colar em outro local
+- Registro de operações (cópia e exclusão) em SQLite
 
-## Log de Operações
+### Interface Gráfica (`explorer_gui.py`)
+- Navegação por pastas com botões
+- Voltar para diretório anterior
+- Visualizar arquivos
+- Copiar, renomear e excluir arquivos/pastas
+- Interface amigável com Tkinter
+- Log das operações igual ao modo terminal
 
-O script mantém um log automático das operações de cópia e exclusão em um banco de dados SQLite chamado `file_log.db`. Cada registro inclui o nome do arquivo ou pasta, o tipo de operação (`copy` ou `delete`), o caminho de origem, o caminho de destino (quando aplicável) e a data/hora da ação.
+## 🗃️ Log de Operações
 
-> **Atenção:** Para evitar que o arquivo de log seja versionado pelo Git, o nome `file_log.db` já está incluído no `.gitignore`.
+Todas as operações de **cópia** e **exclusão** são registradas automaticamente em um banco de dados SQLite chamado `file_log.db`.
 
-## Como usar
+Cada registro inclui:
+- Nome do arquivo/pasta
+- Tipo da operação (`copy` ou `delete`)
+- Caminho de origem
+- Caminho de destino (quando aplicável)
+- Data e hora da operação
+
+> ⚠️ O arquivo `file_log.db` está listado no `.gitignore` para evitar versionamento.
+
+## ▶️ Como Usar
 
 1. Clone este repositório:
    ```bash
    git clone https://github.com/seu-usuario/explorer_terminal.git
+   cd explorer_terminal
