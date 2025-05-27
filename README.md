@@ -1,3 +1,10 @@
+## Disclaimer
+
+This project was created solely for academic purposes to explore and understand file management concepts in an operating system. It is not intended for production use or real-world deployment. Use at your own risk.  
+
+Este projeto foi criado unicamente para fins acadêmicos, com o objetivo de explorar e compreender conceitos de gerenciamento de arquivos em um sistema operacional. Não é destinado para uso em produção ou em ambientes reais. Use por sua conta e risco.
+
+
 # explorer_terminal
 
 Um explorador de arquivos simples em Python, com opções de uso via terminal ou interface gráfica (GUI).
