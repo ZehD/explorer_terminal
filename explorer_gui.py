@@ -2,6 +2,8 @@ import os
 import shutil
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+import subprocess
+import platform
 
 class FileExplorerApp:
     def __init__(self, root):
@@ -26,6 +28,9 @@ class FileExplorerApp:
         # Buttons below tree
         btn_frame = ttk.Frame(left_frame)
         btn_frame.pack(fill="x")
+
+        self.btn_open = ttk.Button(btn_frame, text="Abrir arquivo", command=self.open_item)
+        self.btn_open.pack(side="left", fill="x", expand=True)
 
         self.btn_up = ttk.Button(btn_frame, text="Pasta Anterior", command=self.go_up)
         self.btn_up.pack(side="left", fill="x", expand=True)
@@ -106,6 +111,26 @@ class FileExplorerApp:
         else:
             messagebox.showinfo("Info", "You are already at the root directory.")
 
+    def open_item(self):
+        path = self.get_selected_path()
+        if not path:
+            return
+
+        if os.path.isfile(path):
+            try:
+                if platform.system() == "Windows":
+                    os.startfile(path)
+                elif platform.system() == "Darwin":  # macOS
+                    subprocess.run(["open", path])
+                else:  # Linux and other
+                    subprocess.run(["xdg-open", path])
+            except Exception as e:
+                messagebox.showerror("Error", f"Could not open file:\n{e}")
+        else:
+            messagebox.showinfo("Info", "Selected item is not a file.")
+
+        
+
     def get_selected_path(self):
         node = self.tree.focus()
         if not node:
@@ -145,7 +170,8 @@ class FileExplorerApp:
         name = os.path.basename(self.copy_source)
         dest_path = os.path.join(dest_folder, name)
         if os.path.exists(dest_path):
-            messagebox.showerror("Error", f"Destination already has a file/folder named '{name}'")
+            messagebox.showerror("Warning", f"Destination already has a file/folder named '{name}'. Pasting file named {name}(1).")
+            shutil.copy2(self.copy_source, dest_path)
             return
         try:
             if os.path.isdir(self.copy_source):
