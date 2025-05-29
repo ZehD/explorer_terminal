@@ -23,7 +23,7 @@ class FileExplorerApp:
 
         # Treeview for folders/files
         self.tree = ttk.Treeview(left_frame)
-        self.tree.pack(fill="y", expand=True)
+        self.tree.pack(fill="both", expand=True)
 
         # Buttons below tree
         btn_frame = ttk.Frame(left_frame)
@@ -120,9 +120,9 @@ class FileExplorerApp:
             try:
                 if platform.system() == "Windows":
                     os.startfile(path)
-                elif platform.system() == "Darwin":  # macOS
+                elif platform.system() == "Darwin":
                     subprocess.run(["open", path])
-                else:  # Linux and other
+                else: 
                     subprocess.run(["xdg-open", path])
             except Exception as e:
                 messagebox.showerror("Error", f"Could not open file:\n{e}")
@@ -167,12 +167,20 @@ class FileExplorerApp:
             messagebox.showwarning("Warning", "No copied item to paste.")
             return
         dest_folder = self.get_selected_path()
-        name = os.path.basename(self.copy_source)
-        dest_path = os.path.join(dest_folder, name)
-        if os.path.exists(dest_path):
-            messagebox.showerror("Warning", f"Destination already has a file/folder named '{name}'. Pasting file named {name}(1).")
-            shutil.copy2(self.copy_source, dest_path)
+        if not dest_folder or not os.path.isdir(dest_folder):
+            messagebox.showwarning("Warning", "Please select a destination folder.")
             return
+        name = os.path.basename(self.copy_source)
+        base, ext = os.path.splitext(name)
+        dest_path = os.path.join(dest_folder, name)
+        counter = 1
+        while os.path.exists(dest_path):
+            if os.path.isdir(self.copy_source):
+                dest_path = os.path.join(dest_folder, f"{base}({counter})")
+            else:
+                dest_path = os.path.join(dest_folder, f"{base}({counter}){ext}")
+            counter += 1
+
         try:
             if os.path.isdir(self.copy_source):
                 shutil.copytree(self.copy_source, dest_path)
