@@ -52,3 +52,6 @@ Cada registro inclui:
    ```bash
    git clone https://github.com/seu-usuario/explorer_terminal.git
    cd explorer_terminal
+
+
+https://www.canva.com/design/DAGqGoJqcWE/cRHqzast53wNj2fvFIlssg/edit?utm_content=DAGqGoJqcWE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
