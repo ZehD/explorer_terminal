@@ -12,18 +12,15 @@ class FileExplorerApp:
         self.current_path = os.path.abspath(os.getcwd())
         self.copy_source = None
 
-        # Setup UI frames
         left_frame = ttk.Frame(root)
         left_frame.pack(side="left", fill="y")
 
         right_frame = ttk.Frame(root)
         right_frame.pack(side="right", fill="both", expand=True)
 
-        # Treeview for folders/files
         self.tree = ttk.Treeview(left_frame)
         self.tree.pack(fill="y", expand=True)
 
-        # Buttons below tree
         btn_frame = ttk.Frame(left_frame)
         btn_frame.pack(fill="x")
 
@@ -42,35 +39,29 @@ class FileExplorerApp:
         self.btn_rename = ttk.Button(btn_frame, text="Renomear", command=self.rename_item)
         self.btn_rename.pack(side="left", fill="x", expand=True)
 
-        # Text area to show file contents
         self.text = tk.Text(right_frame, wrap="word")
         self.text.pack(fill="both", expand=True)
 
-        # Bindings
         self.tree.bind("<<TreeviewOpen>>", self.open_node)
         self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
         self.refresh_tree()
 
     def refresh_tree(self):
-        # Clear current tree
         for item in self.tree.get_children():
             self.tree.delete(item)
-        # Insert root node
         self.insert_node("", self.current_path, self.current_path)
         self.tree.item(self.tree.get_children()[0], open=True)
 
     def insert_node(self, parent, text, full_path):
         node = self.tree.insert(parent, "end", text=text, open=False, values=[full_path])
         if os.path.isdir(full_path):
-            # Add a dummy child so the node shows expandable
             self.tree.insert(node, "end")
 
     def open_node(self, event):
         node = self.tree.focus()
         path = self.tree.item(node)["values"][0]
         if os.path.isdir(path):
-            # Clear dummy children before loading real ones
             children = self.tree.get_children(node)
             for child in children:
                 self.tree.delete(child)
@@ -164,7 +155,7 @@ class FileExplorerApp:
             return
         new_name = simpledialog.askstring("Rename", "Enter new name:", initialvalue=os.path.basename(path))
         if not new_name:
-            return  # Cancelled or empty
+            return  
         new_path = os.path.join(os.path.dirname(path), new_name)
         if os.path.exists(new_path):
             messagebox.showerror("Error", "A file or folder with this name already exists.")

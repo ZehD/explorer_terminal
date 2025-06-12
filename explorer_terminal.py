@@ -24,7 +24,7 @@ def terminal_flow():
         items = list_directory(current_path)
 
         if copy_mode:
-            print("\n📋 MODO CÓPIA ATIVO - Item selecionado: " + copy_source_name)
+            print("\nMODO CÓPIA ATIVO - Item selecionado: " + copy_source_name)
             print("\nOpções:")
             print(" - Digite o número do Folder para navegar")
             print(" - '..' para voltar")
