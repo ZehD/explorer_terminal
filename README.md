@@ -9,13 +9,13 @@ Este projeto foi criado unicamente para fins acadêmicos, com o objetivo de expl
 
 Um explorador de arquivos simples em Python, com opções de uso via terminal ou interface gráfica (GUI).
 
-## 📦 Descrição
+##  Descrição
 
 Este projeto oferece uma maneira prática de navegar por diretórios, visualizar arquivos de texto e realizar operações básicas como cópia, exclusão e renomeação. Você pode escolher entre utilizar a versão **terminal**, com comandos simples, ou a versão **gráfica (GUI)**, construída com Tkinter.
 
 Ideal para quem deseja uma ferramenta leve de exploração de arquivos, com registro de operações em banco de dados.
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 ### Terminal (`explorer_terminal.py`)
 - Listar conteúdo de diretórios
@@ -33,7 +33,7 @@ Ideal para quem deseja uma ferramenta leve de exploração de arquivos, com regi
 - Interface amigável com Tkinter
 - Log das operações igual ao modo terminal
 
-## 🗃️ Log de Operações
+##  Log de Operações
 
 Todas as operações de **cópia** e **exclusão** são registradas automaticamente em um banco de dados SQLite chamado `file_log.db`.
 
@@ -44,7 +44,7 @@ Cada registro inclui:
 - Caminho de destino (quando aplicável)
 - Data e hora da operação
 
-> ⚠️ O arquivo `file_log.db` está listado no `.gitignore` para evitar versionamento.
+>  O arquivo `file_log.db` está listado no `.gitignore` para evitar versionamento.
 
 ## ▶️ Como Usar
 
