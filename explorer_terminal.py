@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from file_logger import log_operation
 
@@ -36,6 +37,7 @@ def terminal_flow():
             print(" - '..' para voltar")
             print(" - 'del <número>' para deletar")
             print(" - 'cp <número>' para iniciar cópia")
+            print(" - 'open <número>' para abrir o arquivo com programa padrão")
             print(" - 'exit' para sair")
 
         choice = input("Insira a sua escolha: ")
@@ -90,6 +92,27 @@ def terminal_flow():
                 print(f"Item '{selected}' pronto para cópia. Navegue até o destino e digite 'paste'.")
             else:
                 print("Índice inválido.")
+        elif choice.startswith("open ") and not copy_mode:
+            _, idx = choice.split(maxsplit=1)
+            if idx.isdigit() and int(idx) < len(items):
+                selected = items[int(idx)]
+                selected_path = os.path.join(current_path, selected)
+                if os.path.isfile(selected_path):
+                    try:
+                        if os.name == 'nt':  # Windows
+                            os.system(f'start "" "{selected_path}"')
+                        elif sys.platform == 'darwin':  # macOS
+                            os.system(f'open "{selected_path}"')
+                        else:  # Linux 
+                            os.system(f'xdg-open "{selected_path}"')
+
+                        log_operation(selected, 'open', selected_path)
+                    except Exception as e:
+                        print(f"Erro ao abrir arquivo: {e}")
+                else:
+                    print("Você só pode abrir arquivos, não diretórios.")
+            else:
+                print("Índice inválido.")
         elif choice.isdigit() and int(choice) < len(items):
             selected = items[int(choice)]
             selected_path = os.path.join(current_path, selected)
@@ -100,6 +123,7 @@ def terminal_flow():
                     with open(selected_path, 'r', encoding='utf-8') as f:
                         print(f"\n Conteúdo de {selected}:\n")
                         print(f.read())
+                    log_operation(selected, 'open', selected_path) 
                 except Exception as e:
                     print(f"Erro ao abrir arquivo: {e}")
         else:
